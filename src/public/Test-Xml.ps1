@@ -22,10 +22,10 @@ https://docs.microsoft.com/dotnet/api/system.xml.xmlresolver
 https://docs.microsoft.com/dotnet/api/system.xml.schema.validationeventhandler
 
 .LINK
-Resolve-XmlSchemaLocation.ps1
+Resolve-XmlSchemaLocation
 
 .EXAMPLE
-Test-Xml.ps1 -Xml '</>'
+Test-Xml -Xml '</>'
 
 False
 #>
@@ -84,7 +84,7 @@ Process
 	# kludgy hack to try and address XmlUrlResolver using env working dir:
 	[Environment]::CurrentDirectory = if($Path) {Resolve-Path $Path |Split-Path} else {$PWD}
 	$xmlsrc = if($Path) {@{Path=$Path}} else {@{Xml=$Xml}}
-	foreach($schema in Resolve-XmlSchemaLocation.ps1 @xmlsrc |Where-Object {$_.Url}) {Add-Schema $x.Schemas $schema.Urn $schema.Url}
+	foreach($schema in Resolve-XmlSchemaLocation @xmlsrc |Where-Object {$_.Url}) {Add-Schema $x.Schemas $schema.Urn $schema.Url}
 	if($Schemata) {foreach($schema in $Schemata.GetEnumerator()) {Add-Schema $x.Schemas $schema.Key $schema.Value}}
 	if($x.Schemas.Count -eq 0) {return !$ErrorMessage}
 	$x.Schemas.Schemas().SourceUri |ForEach-Object {Write-Verbose "Added schema $_"}

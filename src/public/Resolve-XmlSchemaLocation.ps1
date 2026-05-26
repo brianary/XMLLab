@@ -19,7 +19,7 @@ https://www.w3.org/TR/xmlschema-1/#schema-loc
 https://stackoverflow.com/a/26786080/54323
 
 .EXAMPLE
-Resolve-XmlSchemaLocation.ps1 test.xml
+Resolve-XmlSchemaLocation test.xml
 
 Path  : C:\test.xml
 Node  : root
@@ -34,7 +34,6 @@ Urn   : http://www.w3.org/2001/XMLSchema-instance
 Url   :
 #>
 
-#Requires -Version 3
 [CmdletBinding()][OutputType([Management.Automation.PSCustomObject])] Param(
 # The string to check.
 [Parameter(ParameterSetName='Xml',Position=0,Mandatory=$true,ValueFromPipeline=$true)][xml] $Xml,

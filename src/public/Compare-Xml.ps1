@@ -13,10 +13,10 @@ transform it to the difference XML. It contains templates for changed nodes.
 XML
 
 .LINK
-Resolve-XPath.ps1
+Resolve-XPath
 
 .EXAMPLE
-Compare-Xml.ps1 '<a b="z"/>' '<a b="y"/>' |Format-Xml.ps1
+Compare-Xml '<a b="z"/>' '<a b="y"/>' |Format-Xml
 
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:template match="@*|node()">
@@ -30,7 +30,7 @@ Compare-Xml.ps1 '<a b="z"/>' '<a b="y"/>' |Format-Xml.ps1
 </xsl:transform>
 
 .EXAMPLE
-Compare-Xml.ps1 '<a b="z"/>' '<a c="y"/>' |Format-Xml.ps1
+Compare-Xml '<a b="z"/>' '<a c="y"/>' |Format-Xml
 
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:template match="@*|node()">
@@ -48,7 +48,7 @@ Compare-Xml.ps1 '<a b="z"/>' '<a c="y"/>' |Format-Xml.ps1
 </xsl:transform>
 
 .EXAMPLE
-Compare-Xml.ps1 '<a><b/><c/><!-- d --></a>' '<a><c/><b/></a>' |Format-Xml.ps1
+Compare-Xml '<a><b/><c/><!-- d --></a>' '<a><c/><b/></a>' |Format-Xml
 
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:template match="@*|node()">
@@ -65,7 +65,7 @@ Compare-Xml.ps1 '<a><b/><c/><!-- d --></a>' '<a><c/><b/></a>' |Format-Xml.ps1
 </xsl:transform>
 
 .EXAMPLE
-Compare-Xml.ps1 '<a/>' '<a><!-- annotation --><new/><?node details?></a>' |Format-Xml.ps1
+Compare-Xml '<a/>' '<a><!-- annotation --><new/><?node details?></a>' |Format-Xml
 
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:template match="@*|node()">
@@ -83,8 +83,6 @@ Compare-Xml.ps1 '<a/>' '<a><!-- annotation --><new/><?node details?></a>' |Forma
 </xsl:transform>
 #>
 
-#Requires -Version 3
-using namespace System.Xml
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter','',Justification='These params are used.')]
  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns','',Justification='These plurals are fine.')]
 [CmdletBinding()][OutputType([xml])] Param(
@@ -155,7 +153,7 @@ function Test-XmlNodesEqual
 function Format-XPathMatch
 {
 	Param([Parameter(Position=0,Mandatory=$true)][XmlNode] $XmlNode)
-	$xpath = Resolve-XPath.ps1 $XmlNode
+	$xpath = Resolve-XPath $XmlNode
 	"match='$($xpath.XPath)' $($xpath.Namespace.GetEnumerator() |ForEach-Object {"xmlns:$($_.Name)='$($_.Value)'"})"
 }
 

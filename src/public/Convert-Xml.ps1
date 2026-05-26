@@ -6,18 +6,16 @@ Transform XML using an XSLT template.
 XML
 
 .EXAMPLE
-Convert-Xml.ps1 '<a xsl:version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"/>' '<z/>' |Format-Xml.ps1
+Convert-Xml '<a xsl:version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"/>' '<z/>' |Format-Xml
 
 <a />
 
 .EXAMPLE
-Convert-Xml.ps1 -TransformFile xsd2html.xslt -Path schema.xsd -OutFile schema.html
+Convert-Xml -TransformFile xsd2html.xslt -Path schema.xsd -OutFile schema.html
 
 Writes schema.html by applying the xsd2html.xslt transformation to schema.xsd.
 #>
 
-#Requires -Version 3
-#Requires -Modules SelectXmlExtensions
 [CmdletBinding(SupportsShouldProcess=$true)]
 [OutputType(ParameterSetName='Xml',[void])][OutputType(ParameterSetName='File',[void])] Param(
 # An XML document containing an XSLT transform.
@@ -46,7 +44,7 @@ Begin
 	[version] $xsltversion = Select-Xml '/*/@version' $TransformXslt -Namespace @{
 			xsl='http://www.w3.org/1999/XSL/Transform'} |Get-XmlValue
 	if($xsltversion -gt '1.0')
-	{ Stop-ThrowError.ps1 "XSLT version $xsltversion is not supported by the CLR." -Argument TransformFile }
+	{ throw "XSLT version $xsltversion is not supported by the CLR." }
 	$xslt = New-Object Xml.Xsl.XslCompiledTransform
 	try
 	{

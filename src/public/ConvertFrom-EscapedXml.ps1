@@ -12,12 +12,11 @@ XML
 System.String, the XML parsed and serialized.
 
 .EXAMPLE
-ConvertFrom-EscapedXml.ps1 '&lt;a href=&quot;http://example.org&quot;&gt;link&lt;/a&gt;'
+ConvertFrom-EscapedXml '&lt;a href=&quot;http://example.org&quot;&gt;link&lt;/a&gt;'
 
 <a href="http://example.org">link</a>
 #>
 
-#Requires -Version 2
 [CmdletBinding()][OutputType([string])] Param(
 # The escaped XML text.
 [Parameter(Mandatory=$true,Position=0,ValueFromPipeline=$true)][string] $EscapedXml,

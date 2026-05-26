@@ -12,7 +12,7 @@ System.String containing the serialized XML document with desired indents.
 XML
 
 .EXAMPLE
-Get-PSProvider alias |ConvertTo-Xml |Format-Xml.ps1
+Get-PSProvider alias |ConvertTo-Xml |Format-Xml
 
 <Objects>
   <Object Type="System.Management.Automation.ProviderInfo">
@@ -32,7 +32,7 @@ Get-PSProvider alias |ConvertTo-Xml |Format-Xml.ps1
 </Objects>
 
 .EXAMPLE
-Get-PSProvider alias |ConvertTo-Xml |Format-Xml.ps1 -NewLineOnAttributes
+Get-PSProvider alias |ConvertTo-Xml |Format-Xml -NewLineOnAttributes
 
 <Objects>
   <Object
@@ -74,7 +74,6 @@ Get-PSProvider alias |ConvertTo-Xml |Format-Xml.ps1 -NewLineOnAttributes
 </Objects>
 #>
 
-#Requires -Version 7
 [CmdletBinding()][OutputType([string])] Param(
 # The XML string or document to format.
 [Parameter(Position=0,Mandatory=$true,ValueFromPipeline=$true)][xml] $Xml,

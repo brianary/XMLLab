@@ -18,14 +18,13 @@ XML
 Select-Xml
 
 .EXAMPLE
-Select-Xml /configuration/appSettings/add web.config |ConvertFrom-XmlElement.ps1
+Select-Xml /configuration/appSettings/add web.config |ConvertFrom-XmlElement
 
 key              value
 ---              -----
 webPages:Enabled false
 #>
 
-#Requires -Version 3
 [CmdletBinding()][OutputType([psobject])] Param(
 # The XML document to convert to a PSObject.
 [Parameter(ParameterSetName='Document',Position=0,Mandatory=$true,ValueFromPipeline=$true)][Xml.XmlDocument] $Document,
@@ -43,11 +42,11 @@ Process
 {
 	switch($PSCmdlet.ParameterSetName)
 	{
-		Document {$Document.DocumentElement |ConvertFrom-XmlElement.ps1 -OnlyAttributes:$OnlyAttributes}
+		Document {$Document.DocumentElement |ConvertFrom-XmlElement -OnlyAttributes:$OnlyAttributes}
 		SelectXmlInfo
 		{
 			@($SelectXmlInfo |ForEach-Object {[Xml.XmlElement]$_.Node} |
-				ConvertFrom-XmlElement.ps1 -OnlyAttributes:$OnlyAttributes)
+				ConvertFrom-XmlElement -OnlyAttributes:$OnlyAttributes)
 		}
 		Element
 		{
@@ -63,10 +62,10 @@ Process
 			{
 				return $Element.InnerText
 			}
-			elseif($SimpleSuccession -and ($Element.Attributes.Count -eq 0) -and 
+			elseif($SimpleSuccession -and ($Element.Attributes.Count -eq 0) -and
 				(($Element.SelectNodes('*') |Group-Object Name |Measure-Object).Count -eq 1))
 			{
-				return @($Element.SelectNodes('*') |ConvertFrom-XmlElement.ps1)
+				return @($Element.SelectNodes('*') |ConvertFrom-XmlElement)
 			}
 			else
 			{
@@ -83,11 +82,11 @@ Process
 						elseif(($subelements |Measure-Object).Count -eq 1)
 						{
 							$subelement = $node.SelectSingleNode('*')
-							[pscustomobject]@{$subelement.Name=@($subelement |ConvertFrom-XmlElement.ps1)}
+							[pscustomobject]@{$subelement.Name=@($subelement |ConvertFrom-XmlElement)}
 						}
 						else
 						{
-							ConvertFrom-XmlElement.ps1 $node
+							ConvertFrom-XmlElement $node
 						}
 					if(!$properties.Contains($node.Name))
 					{ # new property

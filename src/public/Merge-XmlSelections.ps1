@@ -15,7 +15,7 @@ XML
 https://github.com/brianary/Detextive/
 
 .EXAMPLE
-Merge-XmlSelections.ps1 @{Version='/*/@version';Format='/xsl:output/@method'} *.xsl* -Namespace @{xsl='http://www.w3.org/1999/XSL/Transform'}
+Merge-XmlSelections @{Version='/*/@version';Format='/xsl:output/@method'} *.xsl* -Namespace @{xsl='http://www.w3.org/1999/XSL/Transform'}
 
 Path                    Version Format
 ----                    ------- ------
@@ -23,8 +23,6 @@ Z:\Scripts\dataref.xslt 2.0     html
 Z:\Scripts\xhtml2fo.xsl 1.0     xml
 #>
 
-#Requires -Version 3
-#Requires -Modules SelectXmlExtensions
 [CmdletBinding()][OutputType([psobject])] Param(
 # Any dictionary or hashtable of property name to XPath to select a value with.
 [Parameter(Position=0,Mandatory=$true)][Collections.IDictionary] $XPaths,

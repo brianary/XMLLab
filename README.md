@@ -23,5 +23,5 @@ Cmdlets to query, transform, and update XML data.
 - [Merge-XmlSelections](https://github.com/brianary/XMLLab/wiki/Merge-XmlSelections): Builds an object using the named XPath selections as properties.
 - [New-NamespaceManager](https://github.com/brianary/XMLLab/wiki/New-NamespaceManager): Creates an object to lookup XML namespace prefixes.
 - [Resolve-XmlSchemaLocation](https://github.com/brianary/XMLLab/wiki/Resolve-XmlSchemaLocation): Gets the namespaces and their URIs and URLs from a document.
-- [Resolve-XPath](https://github.com/brianary/XMLLab/wiki/Resolve-XPath): Returns the XPath of the location of an XML node.
+- [Resolve-XPath](./src/public/Resolve-XPath.ps1): <!-- ERROR: Unable to find type [XmlNode]. -->
 - [Test-Xml](https://github.com/brianary/XMLLab/wiki/Test-Xml): Try parsing text as XML, and validating it if a schema is provided.

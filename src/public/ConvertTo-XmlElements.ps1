@@ -12,7 +12,7 @@ System.String for each XML-serialized value or property.
 XML
 
 .EXAMPLE
-ConvertTo-XmlElements.ps1 @{html=@{body=@{p='Some text.'}}} -SkipRoot
+ConvertTo-XmlElements @{html=@{body=@{p='Some text.'}}} -SkipRoot
 
 <html>
 <body>
@@ -21,7 +21,7 @@ ConvertTo-XmlElements.ps1 @{html=@{body=@{p='Some text.'}}} -SkipRoot
 </html>
 
 .EXAMPLE
-[pscustomobject]@{UserName='zaphodb';Computer='eddie'} |ConvertTo-XmlElements.ps1
+[pscustomobject]@{UserName='zaphodb';Computer='eddie'} |ConvertTo-XmlElements
 
 <PSCustomObject>
 <UserName>zaphodb</UserName>
@@ -29,7 +29,7 @@ ConvertTo-XmlElements.ps1 @{html=@{body=@{p='Some text.'}}} -SkipRoot
 </PSCustomObject>
 
 .EXAMPLE
-'{"item": {"name": "Test", "id": 1 } }' |ConvertFrom-Json |ConvertTo-XmlElements.ps1 -SkipRoot
+'{"item": {"name": "Test", "id": 1 } }' |ConvertFrom-Json |ConvertTo-XmlElements -SkipRoot
 
 <item>
 <name>Test</name>
@@ -37,7 +37,6 @@ ConvertTo-XmlElements.ps1 @{html=@{body=@{p='Some text.'}}} -SkipRoot
 </item>
 #>
 
-#Requires -Version 3
 [CmdletBinding()][OutputType([string])] Param(
 <#
 A hash or XML element or other object to be serialized as XML elements.

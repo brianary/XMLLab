@@ -13,14 +13,14 @@ XML
 https://stackoverflow.com/a/26786080/54323
 
 .EXAMPLE
-Select-Xml /xsl:transform .\dataref.xslt -Namespace (Get-XmlNamespaces.ps1 .\dataref.xslt)
+Select-Xml /xsl:transform .\dataref.xslt -Namespace (Get-XmlNamespaces .\dataref.xslt)
 
 Node      Path                                       Pattern
 ----      ----                                       -------
 transform C:\Users\brian\GitHub\scripts\dataref.xslt /xsl:transform
 
 .EXAMPLE
-Get-XmlNamespaces.ps1 .\dataref.xslt
+Get-XmlNamespaces .\dataref.xslt
 
 Key     Value
 ---     -----
@@ -32,7 +32,6 @@ wsdl    http://schemas.xmlsoap.org/wsdl/
         http://www.w3.org/1999/xhtml
 #>
 
-#Requires -Version 3
 [CmdletBinding()][OutputType([Collections.Generic.Dictionary[string,string]])] Param(
 # The XML file.
 [Parameter(Position=0,Mandatory=$true,ValueFromPipelineByPropertyName=$true)][Alias('FullName')][string]$Path

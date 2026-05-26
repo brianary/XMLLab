@@ -18,19 +18,17 @@ XML
 https://docs.microsoft.com/dotnet/api/system.xml.xmlnode
 
 .EXAMPLE
-'<a><b c="value"/></a>' |Select-Xml //@c |Resolve-XPath.ps1
+'<a><b c="value"/></a>' |Select-Xml //@c |Resolve-XPath
 
 /a/b/@c
 
 .EXAMPLE
-'<a>one<!-- two -->three</a>' |Select-Xml '//text()' |Resolve-XPath.ps1
+'<a>one<!-- two -->three</a>' |Select-Xml '//text()' |Resolve-XPath
 
 /a/text()[1]
 /a/text()[2]
 #>
 
-#Requires -Version 3
-using namespace System.Xml
 [CmdletBinding()][OutputType([string])] Param(
 # An XML node to retrieve the XPath for.
 [Alias('Node')][Parameter(Position=0,Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
