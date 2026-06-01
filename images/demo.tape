@@ -2,7 +2,7 @@
 Output demo.gif
 Hide
 Set Shell pwsh
-Type "Import-Module ../src/.publish/XMLLab.psd1"
+Type "Import-Module ../.publish/XMLLab.psd1"
 Enter
 Type "Clear-Host"
 Enter

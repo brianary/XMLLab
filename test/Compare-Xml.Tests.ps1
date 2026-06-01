@@ -3,22 +3,15 @@
 Tests Compares two XML documents and returns the differences.
 #>
 
-$basename = "$(($MyInvocation.MyCommand.Name -split '\.',2)[0])."
-$skip = !(Test-Path .changes -Type Leaf) ? $false :
-	!@(Get-Content .changes |Get-Item |Select-Object -ExpandProperty Name |Where-Object {$_.StartsWith($basename)})
 if(!(&"$PSScriptRoot/../scripts/Test-RelevantTest.ps1")) {return}
 BeforeAll {
 	Set-StrictMode -Version Latest
 	&"$PSScriptRoot/../scripts/Import-ThisModule.ps1"
 }
 Describe 'Compare-Xml' -Tag Compare-Xml -Skip:$skip {
-	BeforeAll {
-		$scriptsdir,$sep = (Split-Path $PSScriptRoot),[io.path]::PathSeparator
-		if($scriptsdir -notin ($env:Path -split $sep)) {$env:Path += "$sep$scriptsdir"}
-	}
 	Context 'Compares two XML documents and returns the differences as XSLT' -Tag CompareXml,Compare,Xml {
 		It 'Should return a diff that updates an attribute value' {
-			Compare-Xml.ps1 '<a b="z"/>' '<a b="y"/>' |Format-Xml.ps1 |Should -BeExactly @"
+			Compare-Xml '<a b="z"/>' '<a b="y"/>' |Format-Xml |Should -BeExactly @"
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:template match="@*|node()">
     <xsl:copy>
@@ -32,7 +25,7 @@ Describe 'Compare-Xml' -Tag Compare-Xml -Skip:$skip {
 "@
 		}
 		It 'Should return a diff that changes attributes' {
-			Compare-Xml.ps1 '<a b="z"/>' '<a c="y"/>' |Format-Xml.ps1 |Should -BeExactly @"
+			Compare-Xml '<a b="z"/>' '<a c="y"/>' |Format-Xml |Should -BeExactly @"
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:template match="@*|node()">
     <xsl:copy>
@@ -50,7 +43,7 @@ Describe 'Compare-Xml' -Tag Compare-Xml -Skip:$skip {
 "@
 		}
 		It 'Should return a diff that changes child nodes' {
-			Compare-Xml.ps1 '<a><b/><c/><!-- d --></a>' '<a><c/><b/></a>' |Format-Xml.ps1 |Should -BeExactly @"
+			Compare-Xml '<a><b/><c/><!-- d --></a>' '<a><c/><b/></a>' |Format-Xml |Should -BeExactly @"
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:template match="@*|node()">
     <xsl:copy>
@@ -67,7 +60,7 @@ Describe 'Compare-Xml' -Tag Compare-Xml -Skip:$skip {
 "@
 		}
 		It 'Should return a diff that adds child nodes' {
-			Compare-Xml.ps1 '<a/>' '<a><!-- annotation --><new/><?node details?></a>' |Format-Xml.ps1 |Should -BeExactly @"
+			Compare-Xml '<a/>' '<a><!-- annotation --><new/><?node details?></a>' |Format-Xml |Should -BeExactly @"
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:template match="@*|node()">
     <xsl:copy>
@@ -85,5 +78,7 @@ Describe 'Compare-Xml' -Tag Compare-Xml -Skip:$skip {
 "@
 		}
 	}
-
+}
+AfterAll {
+	&"$PSScriptRoot/../scripts/Remove-ThisModule.ps1"
 }

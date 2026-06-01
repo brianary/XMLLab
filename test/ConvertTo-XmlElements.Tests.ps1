@@ -3,20 +3,13 @@
 Tests serializing complex content into XML elements.
 #>
 
-Import-CharConstants.ps1 NL
-$basename = "$(($MyInvocation.MyCommand.Name -split '\.',2)[0])."
-$skip = !(Test-Path .changes -Type Leaf) ? $false :
-	!@(Get-Content .changes |Get-Item |Select-Object -ExpandProperty Name |Where-Object {$_.StartsWith($basename)})
 if(!(&"$PSScriptRoot/../scripts/Test-RelevantTest.ps1")) {return}
 BeforeAll {
 	Set-StrictMode -Version Latest
 	&"$PSScriptRoot/../scripts/Import-ThisModule.ps1"
+	$NL = [Environment]::NewLine
 }
 Describe 'ConvertTo-XmlElements' -Tag ConvertTo-XmlElements -Skip:$skip {
-	BeforeAll {
-		$scriptsdir,$sep = (Split-Path $PSScriptRoot),[io.path]::PathSeparator
-		if($scriptsdir -notin ($env:Path -split $sep)) {$env:Path += "$sep$scriptsdir"}
-	}
 	Context 'Serializes complex content into XML elements' -Tag Convert,ConvertTo,ConvertToXmlElements,XML {
 		It "Convert '<InputObject>' to '<Result>'" -TestCases @(
 			@{ InputObject = $null; SkipRoot = $true; Result = '<null />' }
@@ -43,10 +36,13 @@ Describe 'ConvertTo-XmlElements' -Tag ConvertTo-XmlElements -Skip:$skip {
 				Result = "<item>$NL<name>Test</name>$NL<id>1</id>$NL</item>" }
 		) {
 			Param([object] $InputObject, [bool] $SkipRoot, [psobject] $Result)
-			ConvertTo-XmlElements.ps1 $InputObject -SkipRoot:$SkipRoot |
+			ConvertTo-XmlElements $InputObject -SkipRoot:$SkipRoot |
 				Should -BeExactly $Result -Because 'parameter should work'
-			,$InputObject |ConvertTo-XmlElements.ps1 -SkipRoot:$SkipRoot |
+			,$InputObject |ConvertTo-XmlElements -SkipRoot:$SkipRoot |
 				Should -BeExactly $Result -Because 'pipeline should work'
 		}
 	}
+}
+AfterAll {
+	&"$PSScriptRoot/../scripts/Remove-ThisModule.ps1"
 }
