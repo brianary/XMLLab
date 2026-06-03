@@ -45,7 +45,9 @@ Process
 			$value = [ordered]@{Path='InputStream';Xml=$x.OwnerDocument}
 			foreach($prop in $XPaths.GetEnumerator())
 			{
-				$value.Add($prop.Key,($x |Select-Xml $prop.Value @ns |Get-XmlValue))
+				$value.Add($prop.Key,($x |Select-Xml $prop.Value @ns |
+					Select-Object -ExpandProperty Node |
+					Select-Object -ExpandProperty Value))
 			}
 			[pscustomobject]$value
 		}
@@ -57,7 +59,9 @@ Process
 			$value = [ordered]@{Path=$f}
 			foreach($prop in $XPaths.GetEnumerator())
 			{
-				$value.Add($prop.Key,(Select-Xml $prop.Value -Path $f @ns |Get-XmlValue))
+				$value.Add($prop.Key,(Select-Xml $prop.Value -Path $f @ns |
+					Select-Object -ExpandProperty Node |
+					Select-Object -ExpandProperty Value))
 			}
 			[pscustomobject]$value
 		}

@@ -42,7 +42,9 @@ Begin
 		[xml] $Xml = Resolve-Path $Path |Get-Content -Raw
 	}
 	[version] $xsltversion = Select-Xml '/*/@version' $TransformXslt -Namespace @{
-			xsl='http://www.w3.org/1999/XSL/Transform'} |Get-XmlValue
+			xsl='http://www.w3.org/1999/XSL/Transform'} |
+			Select-Object -ExpandProperty Node |
+			Select-Object -ExpandProperty Value
 	if($xsltversion -gt '1.0')
 	{ throw "XSLT version $xsltversion is not supported by the CLR." }
 	$xslt = New-Object Xml.Xsl.XslCompiledTransform
