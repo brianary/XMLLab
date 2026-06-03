@@ -8,7 +8,7 @@ BeforeAll {
 	Set-StrictMode -Version Latest
 	&"$PSScriptRoot/../scripts/Import-ThisModule.ps1"
 }
-Describe 'ConvertFrom-EscapedXml' -Tag ConvertFrom-EscapedXml -Skip:$skip {
+Describe 'ConvertFrom-EscapedXml' -Tag ConvertFrom-EscapedXml {
 	Context 'Parse escaped XML into XML and serialize it' -Tag ConvertFromEscapedXml,Convert,ConvertFrom,EscapedXml,Xml {
 		It "Should convert '<Value>' into '<Result>'" -TestCases @(
 			@{ Value = '&lt;x /&gt;'; Result = '<x />' }

@@ -8,9 +8,8 @@ BeforeAll {
 	Set-StrictMode -Version Latest
 	&"$PSScriptRoot/../scripts/Import-ThisModule.ps1"
 	$datadir = Join-Path $PSScriptRoot 'data'
-	#TODO: Figure out SelectXmlExtensions dependency.
 }
-Describe 'Convert-Xml' -Tag Convert-Xml -Skip:$skip {
+Describe 'Convert-Xml' -Tag Convert-Xml {
 	Context 'Transform XML using an XSLT template' -Tag ConvertXml,Convert,Xml,Xslt {
 		It "Should perform a trivial transform to pipeline data" {
 			Convert-Xml '<a xsl:version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"/>' '<z/>' |

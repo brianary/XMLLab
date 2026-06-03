@@ -32,18 +32,18 @@ https://docs.microsoft.com/dotnet/api/system.xml.xmlnode
 [CmdletBinding()][OutputType([string])] Param(
 # An XML node to retrieve the XPath for.
 [Alias('Node')][Parameter(Position=0,Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
-[XmlNode] $XmlNode
+[Xml.XmlNode] $XmlNode
 )
 Begin
 {
-	function Test-NodeMatch([XmlNode]$ReferenceNode,[XmlNode]$DifferenceNode)
+	function Test-NodeMatch([Xml.XmlNode]$ReferenceNode,[Xml.XmlNode]$DifferenceNode)
 	{
 		return $ReferenceNode.get_NodeType() -eq $DifferenceNode.get_NodeType() -and
 			$ReferenceNode.get_LocalName() -eq $DifferenceNode.get_LocalName() -and
 			$ReferenceNode.get_NamespaceURI() -eq $DifferenceNode.get_NamespaceURI()
 	}
 
-	function Measure-XmlNodePosition([Parameter(Position=0,Mandatory=$true)][XmlNode]$Node)
+	function Measure-XmlNodePosition([Parameter(Position=0,Mandatory=$true)][Xml.XmlNode]$Node)
 	{
 		if(!($Node.PreviousSibling -or $Node.NextSibling)) {return}
 		for($i,$n = 0,$Node; $n; $n = $n.PreviousSibling) {if(Test-NodeMatch $n $Node) {$i++}}
@@ -53,7 +53,7 @@ Begin
 		else {return}
 	}
 
-	function Get-NodeName([Parameter(Position=0,Mandatory=$true)][XmlNode]$Node,
+	function Get-NodeName([Parameter(Position=0,Mandatory=$true)][Xml.XmlNode]$Node,
 		[Parameter(Position=1)][Collections.Hashtable]$Namespace=@{})
 	{
 		if($Node.get_NamespaceURI() -and !$Node.get_Prefix() -and ($Node.get_NodeType() -ne 'Attribute' -or
@@ -80,7 +80,7 @@ Begin
 		}
 	}
 
-	function Resolve-XmlNode([Parameter(Position=0,Mandatory=$true)][XmlNode]$Node,
+	function Resolve-XmlNode([Parameter(Position=0,Mandatory=$true)][Xml.XmlNode]$Node,
 		[Parameter(Position=1)][Collections.Hashtable]$Namespace=@{},
 		[switch]$AsObject)
 	{

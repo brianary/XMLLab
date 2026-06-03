@@ -4,12 +4,12 @@ Tests serializing complex content into XML elements.
 #>
 
 if(!(&"$PSScriptRoot/../scripts/Test-RelevantTest.ps1")) {return}
+$Script:NL = [Environment]::NewLine
 BeforeAll {
 	Set-StrictMode -Version Latest
 	&"$PSScriptRoot/../scripts/Import-ThisModule.ps1"
-	$NL = [Environment]::NewLine
 }
-Describe 'ConvertTo-XmlElements' -Tag ConvertTo-XmlElements -Skip:$skip {
+Describe 'ConvertTo-XmlElements' -Tag ConvertTo-XmlElements {
 	Context 'Serializes complex content into XML elements' -Tag Convert,ConvertTo,ConvertToXmlElements,XML {
 		It "Convert '<InputObject>' to '<Result>'" -TestCases @(
 			@{ InputObject = $null; SkipRoot = $true; Result = '<null />' }
