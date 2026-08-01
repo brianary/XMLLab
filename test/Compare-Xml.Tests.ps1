@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-Tests Compares two XML documents and returns the differences.
+Tests comparing two XML documents and returns the differences.
 #>
 
 if(!(&"$PSScriptRoot/../scripts/Test-RelevantTest.ps1")) {return}

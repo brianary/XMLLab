@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-Tests Converts named nodes of an element to properties of a PSObject, recursively.
+Tests converting named nodes of an element to properties of a PSObject, recursively.
 #>
 
 if(!(&"$PSScriptRoot/../scripts/Test-RelevantTest.ps1")) {return}
