@@ -21,5 +21,5 @@ Describe 'New-NamespaceManager' -Tag New-NamespaceManager,New,NamespaceManager {
 
 }
 AfterAll {
-	&"/home/brianary/GitHub/XMLLab/scripts/../scripts/Remove-ThisModule.ps1"
+	&"$PSScriptRoot/../scripts/Remove-ThisModule.ps1"
 }

@@ -30,5 +30,5 @@ Describe 'Get-XmlNamespaces' -Tag Get-XmlNamespaces,Get,XmlNamespaces {
 
 }
 AfterAll {
-	&"/home/brianary/GitHub/XMLLab/scripts/../scripts/Remove-ThisModule.ps1"
+	&"$PSScriptRoot/../scripts/Remove-ThisModule.ps1"
 }

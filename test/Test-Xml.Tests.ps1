@@ -29,5 +29,5 @@ False
 	}
 }
 AfterAll {
-	&"/home/brianary/GitHub/XMLLab/scripts/../scripts/Remove-ThisModule.ps1"
+	&"$PSScriptRoot/../scripts/Remove-ThisModule.ps1"
 }
