@@ -11,7 +11,7 @@ BeforeAll {
 Describe 'Format-Xml' -Tag Format-Xml,Format,Xml {
 	Context 'Pretty-prints XML' {
 		It "Indents XML elements" {
-			(Get-PSProvider alias |ConvertTo-Xml |Format-Xml) -replace '\\|\r' |Should -BeExactly (@"
+			(Get-PSProvider alias |ConvertTo-Xml |Format-Xml).Replace('\','/') -replace '\r' |Should -BeExactly (@"
 <Objects>
   <Object Type="System.Management.Automation.ProviderInfo">
     <Property Name="ImplementingType" Type="System.RuntimeType">Microsoft.PowerShell.Commands.AliasProvider</Property>
@@ -31,10 +31,10 @@ Describe 'Format-Xml' -Tag Format-Xml,Format,Xml {
     <Property Name="AltItemSeparator" Type="System.Char">\</Property>
   </Object>
 </Objects>
-"@ -replace '[\\|\r]') -Because 'the output should indent the XML elements'
+"@.Replace('\','/') -replace '\r') -Because 'the output should indent the XML elements'
 		}
 		It "Indents XML attributes" {
-			(Get-PSProvider alias |ConvertTo-Xml |Format-Xml -NewLineOnAttributes) -replace '\\|\r' |Should -BeExactly (@"
+			(Get-PSProvider alias |ConvertTo-Xml |Format-Xml -NewLineOnAttributes).Replace('\','/') -replace '\r' |Should -BeExactly (@"
 <Objects>
   <Object
     Type="System.Management.Automation.ProviderInfo">
@@ -82,7 +82,7 @@ Describe 'Format-Xml' -Tag Format-Xml,Format,Xml {
       Type="System.Char">\</Property>
   </Object>
 </Objects>
-"@ -replace '\\|\r') -Because 'the output should indent the XML attributes'
+"@.Replace('\','/') -replace '\r') -Because 'the output should indent the XML attributes'
 		}
 	}
 
