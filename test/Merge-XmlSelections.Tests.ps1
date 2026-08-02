@@ -16,7 +16,7 @@ Describe 'Merge-XmlSelections' -Tag Merge-XmlSelections,Merge,XmlSelections {
 				Version = '/*/@version'
 				Format  = '/xsl:transform/xsl:output/@method'
 			} "$datadir/xslt-test.xslt" -Namespace @{xsl='http://www.w3.org/1999/XSL/Transform'}
-			$result.Path |Should -BeLike '*xslt-test.xslt'
+			$result.Path |Split-Path -Leaf |Should -BeExactly 'xslt-test.xslt'
 			$result.Version |Should -Be '1.0'
 			$result.Format |Should -Be 'text'
 		}
