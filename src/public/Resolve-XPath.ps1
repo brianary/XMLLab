@@ -29,7 +29,7 @@ https://docs.microsoft.com/dotnet/api/system.xml.xmlnode
 /a/text()[2]
 #>
 
-[CmdletBinding()][OutputType([string])] Param(
+[CmdletBinding()][OutputType([pscustomobject])] Param(
 # An XML node to retrieve the XPath for.
 [Alias('Node')][Parameter(Position=0,Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
 [Xml.XmlNode] $XmlNode
@@ -53,8 +53,7 @@ Begin
 		else {return}
 	}
 
-	function Get-NodeName([Parameter(Position=0,Mandatory=$true)][Xml.XmlNode]$Node,
-		[Parameter(Position=1)][Collections.Hashtable]$Namespace=@{})
+	function Get-NodeName([Parameter(Position=0,Mandatory=$true)][Xml.XmlNode]$Node)
 	{
 		if($Node.get_NamespaceURI() -and !$Node.get_Prefix() -and ($Node.get_NodeType() -ne 'Attribute' -or
 			$Node.get_NamespaceURI() -ne $Node.OwnerElement.get_NamespaceURI()))
@@ -81,17 +80,16 @@ Begin
 	}
 
 	function Resolve-XmlNode([Parameter(Position=0,Mandatory=$true)][Xml.XmlNode]$Node,
-		[Parameter(Position=1)][Collections.Hashtable]$Namespace=@{},
 		[switch]$AsObject)
 	{
-		$name = Get-NodeName $Node $Namespace
+		$name = Get-NodeName $Node
 		$xpath = switch($Node.get_NodeType())
 		{
-			Attribute {"$(Resolve-XmlNode $Node.OwnerElement $Namespace)/@$name"}
+			Attribute {"$(Resolve-XmlNode $Node.OwnerElement)/@$name"}
 			CDATA {"$(Resolve-XmlNode $Node.ParentNode)/text()$(Measure-XmlNodePosition $Node)"}
 			Comment {"$(Resolve-XmlNode $Node.ParentNode)/comment()$(Measure-XmlNodePosition $Node)"}
 			Document {if($AsObject){'/'}else{$null}}
-			Element {"$(Resolve-XmlNode $Node.ParentNode $Namespace)/$name$(Measure-XmlNodePosition $Node)"}
+			Element {"$(Resolve-XmlNode $Node.ParentNode)/$name$(Measure-XmlNodePosition $Node)"}
 			ProcessingInstruction {
 				"$(Resolve-XmlNode $Node.ParentNode)/processing-instruction('$name')$(Measure-XmlNodePosition $Node)"}
 			SignificantWhitespace {"$(Resolve-XmlNode $Node.ParentNode)/text()$(Measure-XmlNodePosition $Node)"}
@@ -104,5 +102,6 @@ Begin
 }
 Process
 {
+	$Script:Namespace = @{}
 	Resolve-XmlNode $XmlNode -AsObject
 }
