@@ -41,12 +41,17 @@ Begin
 		[xml] $TransformXslt = Resolve-Path $TransformFile |Get-Content -Raw
 		[xml] $Xml = Resolve-Path $Path |Get-Content -Raw
 	}
-	[version] $xsltversion = Select-Xml '/*/@version' $TransformXslt -Namespace @{
+	[version] $xsltversion = Select-Xml '/*/@version|/*/@xsl:version' $TransformXslt -Namespace @{
 			xsl='http://www.w3.org/1999/XSL/Transform'} |
 			Select-Object -ExpandProperty Node |
 			Select-Object -ExpandProperty Value
 	if($xsltversion -gt '1.0')
-	{ throw "XSLT version $xsltversion is not supported by the CLR." }
+	{
+		if(!(Get-Command SaxonHE12NetXslt -Type Application -EA Ignore))
+		{
+			throw 'To transform using XSLT 2+, install support with: dotnet tool install -g SaxonHE12NetXslt'
+		}
+	}
 	$xslt = New-Object Xml.Xsl.XslCompiledTransform
 	try
 	{
@@ -63,26 +68,41 @@ Begin
 Process
 {
 	if($PSCmdlet.ParameterSetName -eq 'File') {[xml] $Xml = Resolve-Path $Path |Get-Content -Raw}
-	if(!$OutFile)
+	if($xsltversion -eq '1.0')
 	{
-		$ms = New-Object IO.MemoryStream
-		$xw = [Xml.XmlWriter]::Create($ms,$xslt.OutputSettings)
-		$xslt.Transform($Xml,$xw)
-		$xw.Close() ; $xw.Dispose() ; $xw = $null
-		[void]$ms.Seek(0,0)
-		$result = New-Object xml
-		$result.Load($ms)
-		$ms.Close() ; $ms.Dispose() ; $ms = $null
-		$result
+		if(!$OutFile)
+		{
+			$ms = New-Object IO.MemoryStream
+			$xw = [Xml.XmlWriter]::Create($ms,$xslt.OutputSettings)
+			$xslt.Transform($Xml,$xw)
+			$xw.Close() ; $xw.Dispose() ; $xw = $null
+			[void]$ms.Seek(0,0)
+			$result = New-Object xml
+			$result.Load($ms)
+			$ms.Close() ; $ms.Dispose() ; $ms = $null
+			$result
+		}
+		else
+		{
+			$absOutFile = if((Split-Path $OutFile -IsAbsolute)) {$OutFile} else {Join-Path "$PWD" $OutFile}
+			if((Test-Path $absOutFile) -and
+				!$PSCmdlet.ShouldContinue("$(Get-Item $absOutFile |Select-Object FullName,LastWriteTime,Length)","Overwrite File?"))
+			{Write-Warning "Skipping transform from $absPath to $OutFile"; return}
+			$sw = New-Object IO.StreamWriter $absOutFile
+			$xslt.Transform([Xml.XPath.IXPathNavigable]$Xml,(New-Object Xml.XmlTextWriter $sw))
+			$sw.Close() ; $sw.Dispose() ; $sw = $null
+		}
+	}
+	elseif($PSCmdlet.ParameterSetName -eq 'File')
+	{
+		$out = $OutFile ? @("-o:$OutFile") : @()
+		SaxonHE12NetXslt "-s:$Path" "-xsl:$TransformFile" @out
 	}
 	else
 	{
-		$absOutFile = if((Split-Path $OutFile -IsAbsolute)) {$OutFile} else {Join-Path "$PWD" $OutFile}
-		if((Test-Path $absOutFile) -and
-			!$PSCmdlet.ShouldContinue("$(Get-Item $absOutFile |Select-Object FullName,LastWriteTime,Length)","Overwrite File?"))
-		{Write-Warning "Skipping transform from $absPath to $OutFile"; return}
-		$sw = New-Object IO.StreamWriter $absOutFile
-		$xslt.Transform([Xml.XPath.IXPathNavigable]$Xml,(New-Object Xml.XmlTextWriter $sw))
-		$sw.Close() ; $sw.Dispose() ; $sw = $null
+		$out = $OutFile ? @("-o:$OutFile") : @()
+		$xsltfile = [io.path]::GetTempFileName()
+		$TransformXslt.Save($xsltfile)
+		$Xml.OuterXml |SaxonHE12NetXslt '-s:-' "-xsl:$xsltfile" @out
 	}
 }
